@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+      - release-
+  create:
+    tags:
+      - v*
 
 jobs:
   build:
@@ -36,10 +40,17 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Get image tag
+    - name: Get image tag for push
       run: |
-        export FOO=${{ github.sha }}
-        echo "::set-env name=IMAGE_TAG::${FOO::6}"
+        export SHA=${{ github.sha }}
+        echo "::set-env name=IMAGE_TAG::${SHA::6}"
+      if: github.event_name == 'push'
+    
+    - name: Get image tag for push
+      run: |
+        export TAG=${{ github.ref }}
+        echo "::set-env name=IMAGE_TAG::$TAG"
+      if: github.event_name == 'create'
 
     - name: Build, tag, and push image to Amazon ECR
       env:
