@@ -31,6 +31,7 @@ export class Header extends PureComponent {
     return (
       <AppBar
         title="ACME CORP BLOG"
+        
         iconElementLeft={
           isPost ? (
             <IconButton onClick={this._handleClick}>
@@ -39,7 +40,7 @@ export class Header extends PureComponent {
           ) : null
         }
         showMenuIconButton={isPost}
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: 'center', backgroundColor: '#db1499' }}
       />
     );
   }
