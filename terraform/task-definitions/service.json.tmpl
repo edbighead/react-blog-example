@@ -1,0 +1,15 @@
+[
+    {
+      "name": "asem-lab-web-${env_name}",
+      "image": "315727832121.dkr.ecr.us-east-2.amazonaws.com/asem-labs:${image_tag}",
+      "memory": 256,
+      "cpu": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ]
