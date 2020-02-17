@@ -40,16 +40,18 @@ jobs:
     #   id: login-ecr
     #   uses: aws-actions/amazon-ecr-login@v1
 
-    # - name: Get image tag for push
-    #   run: |
-    #     export SHA=${{ github.sha }}
-    #     echo "::set-env name=IMAGE_TAG::${SHA::6}"
-    #   if: github.event_name == 'push'
+    - name: Get image tag for push
+      run: |
+        export SHA=${{ github.sha }}
+        echo "::set-env name=IMAGE_TAG::${SHA::6}"
+        echo "::set-env name=DEPLOY_ENV::dev"
+      if: github.event_name == 'push'
     
-    # - name: Get image tag for tag
-    #   run: |
-    #     echo "::set-env name=IMAGE_TAG::${GITHUB_REF/refs\/tags\//}"
-    #   if: github.event_name == 'create'
+    - name: Get image tag for tag
+      run: |
+        echo "::set-env name=IMAGE_TAG::${GITHUB_REF/refs\/tags\//}"
+        echo "::set-env name=DEPLOY_ENV::prod"
+      if: github.event_name == 'create'
 
     # - name: Build, tag, and push image to Amazon ECR
     #   env:
@@ -67,8 +69,33 @@ jobs:
       with:
         tf_actions_version: 0.12.13
         tf_actions_subcommand: 'init'
-        tf_actions_comment: true
+        tf_actions_working_dir: './terraform'
+        args: '-backend-config="bucket=asem-labs-${{ env.DEPLOY_ENV }}"'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TF_VAR_env_name: ${{ env.DEPLOY_ENV }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+    
+    - name: 'Terraform Plan'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.13
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: './terraform'
+        args: '-backend-config="bucket=asem-labs-${{ env.DEPLOY_ENV }}"'
+      env:
+        TF_VAR_env_name: ${{ env.DEPLOY_ENV }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+
+    # - name: 'Terraform Apply'
+    #   uses: hashicorp/terraform-github-actions@master
+    #   with:
+    #     tf_actions_version: 0.12.13
+    #     tf_actions_subcommand: 'apply'
+    #     tf_actions_working_dir: './terraform'
+    #     args: '-backend-config="bucket=asem-labs-${{ env.DEPLOY_ENV }}", -auto-approve'
+    #   env:
+    #     TF_VAR_env_name: ${{ env.DEPLOY_ENV }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}

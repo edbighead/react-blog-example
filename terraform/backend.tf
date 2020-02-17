@@ -6,7 +6,6 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "asem-labs-${terraform.workspace}"
     key    = "tfstate"
     region = "us-east-1"
   }
