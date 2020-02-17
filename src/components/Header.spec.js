@@ -13,10 +13,6 @@ describe('Header', () => {
       };
       wrapper = shallow(<Header {...props} />);
     });
-
-    it('renders correctly', () => {
-      expect(wrapper.getElement()).toMatchSnapshot();
-    });
   });
 
   describe('when props.location.pathname="/posts/"', () => {
@@ -26,10 +22,6 @@ describe('Header', () => {
         history: {},
       };
       wrapper = shallow(<Header {...props} />);
-    });
-
-    it('renders correctly', () => {
-      expect(wrapper.getElement()).toMatchSnapshot();
     });
 
     describe('when props.history.length=3', () => {
