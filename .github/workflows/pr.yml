@@ -1,4 +1,4 @@
-name: pipeline
+name: pull_request
 
 on:
   pull_request:
@@ -26,8 +26,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm lint
-    - run: npm test
+    - name: Install dependencies
+      run: npm install
+    - name: Lint Action
+      uses: samuelmeuli/lint-action@v1.2.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        eslint: true
+    - name: Run unit tests
+      run: npm test
       env:
         CI: true
