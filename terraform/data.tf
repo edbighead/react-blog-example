@@ -1,5 +1,7 @@
 data "aws_availability_zones" "available" {}
 
+data "aws_caller_identity" "current" {}
+
 data "template_file" "service_json" {
   template = "${file("task-definitions/service.json.tmpl")}"
   vars = {
