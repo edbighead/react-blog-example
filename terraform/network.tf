@@ -79,6 +79,13 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port = 0
     to_port   = 0
@@ -126,6 +133,22 @@ resource "aws_alb_target_group" "app" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "front_end" {
+  load_balancer_arn = "${aws_alb.main.id}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_alb_listener" "front_end_ssl" {
   load_balancer_arn = "${aws_alb.main.id}"
   port              = "443"
   protocol          = "HTTPS"
