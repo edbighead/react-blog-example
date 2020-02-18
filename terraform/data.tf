@@ -15,3 +15,8 @@ data "aws_iam_role" "ecs_task_execution_role" {
 data "aws_route53_zone" "selected" {
   name         = "laur.work."
 }
+
+data "aws_acm_certificate" "laur_work" {
+  domain   = "laur.work"
+  statuses = ["ISSUED"]
+}
