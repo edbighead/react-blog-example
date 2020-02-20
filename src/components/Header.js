@@ -40,7 +40,7 @@ export class Header extends PureComponent {
           ) : null
         }
         showMenuIconButton={isPost}
-        style={{ textAlign: 'center', backgroundColor: '#888444' }}
+        style={{ textAlign: 'center', backgroundColor: '#1809e8' }}
       />
     );
   }
